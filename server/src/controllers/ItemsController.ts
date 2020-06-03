@@ -2,7 +2,7 @@ import knex from '../database/connection';
 import {Request, Response} from 'express';
 
 
-class ItensController {
+class ItemsController {
     async index(request: Request, response: Response) {
         const items = await knex('items').select('*');
 
