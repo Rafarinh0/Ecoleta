@@ -32,9 +32,20 @@ const CreatePoint = () => {
     const [ufs, setUfs] = useState<string[]>([]);
     const [cities, setCities] = useState<string[]>([]);
 
+    const [initialMapPosition, setInitialMapPosition] = useState<[number, number]>([0, 0]);
+
     const [selectedUF, setSelectedUF] = useState('0');
     const [selectedCity, setSelectedCity] = useState('0');
-    const [selectedMapPosition, setSelectedMapPosition] = useState<[number,number]>([0,0]);
+    const [selectedMapPosition, setSelectedMapPosition] = useState<[number, number]>([0, 0]);
+
+    useEffect(() => {
+        navigator.geolocation.getCurrentPosition(position=>{
+            const {latitude, longitude} = position.coords;
+
+            setInitialMapPosition([latitude,longitude]);
+        })
+    }, [])
+
     useEffect(() => {
         api.get('items').then(response => {
             setItems(response.data);
@@ -74,7 +85,7 @@ const CreatePoint = () => {
         setSelectedCity(city);
     }
 
-    function handleMapClick(event: LeafletMouseEvent){
+    function handleMapClick(event: LeafletMouseEvent) {
         setSelectedMapPosition([
             event.latlng.lat,
             event.latlng.lng,
@@ -136,7 +147,7 @@ const CreatePoint = () => {
                         <span>Selecione o endereço no mapa</span>
                     </legend>
 
-                    <Map center={[-8.0646418, -34.8955188]} zoom={15} onClick={handleMapClick}>
+                    <Map center={initialMapPosition} zoom={15} onClick={handleMapClick}>
                         <TileLayer
                             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
